@@ -1,6 +1,6 @@
 FROM rackspacedot/python37:latest
 
-MAINTAINER Michael Kirk <michael.kirk@thomsonreuters.com>
+MAINTAINER Michael Kirk <mujina@pugme.co.uk>
 
 ARG GH_RUNNER_VERSION="2.164.0"
 

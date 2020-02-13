@@ -1,13 +1,8 @@
 ## Instructions 
 The runner.json file in this directory contains the CloudFormation required 
-to build an EC2 instance in the native AWS TR Central account with an IAM Role & 
+to build an EC2 instance in your AWS account with an IAM Role & 
 associated instance profile that allows the GitHub self-hosted runners to upload 
 artifacts to S3.
-
-TODO: The PowerUser is hardcoded (make a parameter)
-
-The S3 buckets are the known buckets that contain artifacts that trigger 
-existing IHN CICD pipelines. 
 
 After you have built your EC2 instance with the CF/runner.json log into your 
 EC2 instance using ssh to install Docker (if not done via user data of other means
