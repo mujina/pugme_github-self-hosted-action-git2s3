@@ -7,7 +7,7 @@ artifacts to S3.
 After you have built your EC2 instance with the CF/runner.json log into your 
 EC2 instance using ssh to install Docker (if not done via user data of other means
 )
-* <code>ssh -i ~ssh/my_aws_private_key.pem ec2-user@$instance-name
+* <code>ssh -i ~ssh/my_aws_private_key.pem ec2-user@$instance-name</code>
 * <code>yum install -y docker</code>
 * <code>sudo service docker start</code>
 
