@@ -1,6 +1,6 @@
 ## Instructions 
 Log into your EC2 instance built with CF/runner.json using ssh 
-* <code>ssh -i ~ssh/my_aws_private_key.pem ec2-user@$instance-name
+* <code>ssh -i ~ssh/my_aws_private_key.pem ec2-user@$instance-name</code>
 
 Build the GitHub Runner Docker Image (Assumes Dockerfile in local directory)
 * <code>docker build -t github-runner .</code>
