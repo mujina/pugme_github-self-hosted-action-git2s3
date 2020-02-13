@@ -1,0 +1,21 @@
+on: push
+env:
+  project_name: my_project
+  s3_bucket: my_bucket
+
+jobs:
+  build:
+    name: trigger
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create .metadata.json
+        run: |
+          python3 trigger/write_metadata.py
+      - name: Zip artifact
+        run: |
+          zip -r "${project_name}.zip" . -x .git/\* -x .github/\*
+          ls -l *.zip
+      - name: Upload to s3
+        run: |
+          aws s3 cp ${project_name}.zip s3://${s3_bucket}/

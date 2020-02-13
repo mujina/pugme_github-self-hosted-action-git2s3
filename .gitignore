@@ -1,0 +1,6 @@
+.idea/
+.exe
+.zip
+__pycache__/
+*.pyc
+.testdata.txt

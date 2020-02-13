@@ -1,0 +1,12 @@
+Example of the native instructions provided to add a runner by GitHub
+
+$ mkdir actions-runner && cd actions-runner// Download the latest runner package
+$ curl -O -L https://github.com/actions/runner/releases/download/v2.164.0/actions-runner-linux-x64-2.164.0.tar.gz// Extract the installer
+$ tar xzf ./actions-runner-linux-x64-2.164.0.tar.gz
+$ ./config.sh --url https://github.com/${my-project}/ --token <REDACTED>
+$ ./run.sh
+
+Using your self-hosted runner
+
+# Use this yaml in your workflow file for each job
+runs-on: self-hosted

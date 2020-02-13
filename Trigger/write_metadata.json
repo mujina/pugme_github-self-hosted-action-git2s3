@@ -1,0 +1,23 @@
+import os
+import json
+
+with_debug = os.getenv('debug', 0)
+
+if with_debug == '1':
+    for key in os.environ.keys():
+        value = os.environ[key]
+        print(F"{key}: {value}")
+
+metadata = {
+    'WORKFLOW_WEBHOOK_TRIGGER': os.getenv('GITHUB_REF'),
+    'WORKFLOW_SOURCE_REPO_URL': os.getenv('GITHUB_REPOSITORY'),
+    'WORKFLOW_RESOLVED_SOURCE_VERSION': os.getenv('GITHUB_SHA')
+}
+
+if with_debug == '1':
+    print(metadata)
+
+with open('./.metadata.json', 'w') as outfile:
+    json.dump(metadata, outfile)
+
+

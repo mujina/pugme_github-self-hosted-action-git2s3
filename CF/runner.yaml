@@ -1,0 +1,113 @@
+---
+Description: EC2 CloudFormation for IHN Github Runner - environment DEVELOPMENT
+Parameters:
+  EnvironmentType:
+    Default: DEVELOPMENT
+    Description: Environment instance belongs too
+    Type: String
+  ProjectName:
+    Default: pugme
+    Description: Project name
+    Type: String
+  ResourceOwner:
+    Default: mujina@pugme.co.uk
+    Description: Resource Owner of the application
+    Type: String
+  BucketName:
+    Default: pugme-deploy
+    Description: Bucket Name to receive artifact
+    Type: String
+  KeyPairName:
+    Default: pugme
+    Description: AWS Key Pair name for EC2 instance
+    Type: AWS::EC2::KeyPair::KeyName
+  ImageId:
+    Type: String
+    Default: ""
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet Id for EC2 instance
+  SecurityGroupIds:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Security Group Id for EC2 instance
+  InstanceType:
+    Type: String
+    Default: ""
+    Description: Instance type e.g. t3.medium
+
+Resources:
+  RunnerEc2:
+    Type: AWS::EC2::Instance
+    Properties:
+      IamInstanceProfile:
+        Ref: RunnerInstanceProfile
+      ImageId: !Ref ImageId
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      SecurityGroupIds:
+        !Ref SecurityGroupIds
+      SubnetId:
+        !Ref SubnetId
+      Tags:
+      - Key: pugme:reource-owner
+        Value:
+          Ref: ResourceOwner
+      - Key: pugme:environment-type
+        Value:
+          Ref: EnvironmentType
+      - Key: pugme:project-name
+        Value:
+          Ref: ProjectName
+      - Key: Name
+        Value: pugme-github-runner
+      - Key: Stack_name
+        Value:
+          Ref: AWS::StackName
+      - Key: Backup
+        Value: 'FALSE'
+      UserData:
+        Fn::Base64:
+          Fn::Join:
+          - "\n"
+          - - "#!/bin/bash"
+            - "yum install -y docker"
+            - "usermod -a -G docker ec2-user"
+            - "service docker start"
+
+  RunnerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    DependsOn: RunnerIamRole
+    Properties:
+      InstanceProfileName: github-runner-instance-profile
+      Path: "/"
+      Roles:
+      - Ref: RunnerIamRole
+  RunnerIamRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: github-runner-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: sts:AssumeRole
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Effect: Allow
+      Path: "/"
+  RunnerIamPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn: RunnerIamRole
+    Properties:
+      Description: Policy to allow runner to upload to s3
+      ManagedPolicyName: github-runner-s3-policy
+      Path: "/"
+      Roles:
+      - Ref: RunnerIamRole
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: s3:PutObject
+          Resource:
+          - Fn::Sub: "arn:aws:s3:::${BucketName}/*"
+          Effect: Allow
